@@ -15,7 +15,7 @@ def download_youtube_video(url):
     
     clean_url = clean_youtube_url(url.strip())
     
-    # Locate cookies file if present
+    # Locate cookie file automatically
     cookie_file = None
     for filename in ['cookies.txt', 'cookies.txt.txt', 'cookies', 'www.youtube.com_cookies.txt']:
         if os.path.exists(filename):
@@ -23,10 +23,18 @@ def download_youtube_video(url):
             break
 
     ydl_opts = {
-        'format': 'best',
+        # Fallback format string to catch any available stream (MP4/WebM/Single-file)
+        'format': 'bestvideo+bestaudio/best',
         'outtmpl': 'downloads/%(title)s.%(ext)s',
         'quiet': True,
         'no_warnings': True,
+        'nocheckcertificate': True,
+        # Allow multi-client rotation so a stream is always found
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['mweb', 'ios', 'android', 'web']
+            }
+        }
     }
     
     if cookie_file:
