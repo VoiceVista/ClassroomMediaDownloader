@@ -15,18 +15,24 @@ def download_youtube_video(url):
     
     clean_url = clean_youtube_url(url.strip())
     
+    # Locate cookies file if present
+    cookie_file = None
+    for filename in ['cookies.txt', 'cookies.txt.txt', 'cookies', 'www.youtube.com_cookies.txt']:
+        if os.path.exists(filename):
+            cookie_file = filename
+            break
+
+    ydl_opts = {
+        'format': 'best',
+        'outtmpl': 'downloads/%(title)s.%(ext)s',
+        'quiet': True,
+        'no_warnings': True,
+    }
+    
+    if cookie_file:
+        ydl_opts['cookiefile'] = cookie_file
+
     try:
-        ydl_opts = {
-            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-            'outtmpl': 'downloads/%(title)s.%(ext)s',
-            'quiet': True,
-            'no_warnings': True,
-        }
-        
-        # Pass cookies file if present in the repository
-        if os.path.exists('cookies.txt'):
-            ydl_opts['cookiefile'] = 'cookies.txt'
-            
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(clean_url, download=True)
             file_path = ydl.prepare_filename(info)
