@@ -17,14 +17,20 @@ def download_youtube_video(url):
     
     try:
         ydl_opts = {
-            'format': 'best',
+            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
             'outtmpl': 'downloads/%(title)s.%(ext)s',
             'quiet': True,
             'no_warnings': True,
+            # Force mobile and embedded clients to bypass YouTube bot detection
             'extractor_args': {
                 'youtube': {
-                    'player_client': ['ios', 'android', 'mweb']
+                    'player_client': ['mweb', 'web_creator', 'android', 'ios'],
+                    'player_skip': ['webpage', 'configs']
                 }
+            },
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1',
+                'Accept-Language': 'en-US,en;q=0.9',
             }
         }
         
