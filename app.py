@@ -23,20 +23,18 @@ def download_youtube_video(url):
             break
 
     ydl_opts = {
-        # Fallback format string to catch any available stream (MP4/WebM/Single-file)
-        'format': 'bestvideo+bestaudio/best',
-        'outtmpl': 'downloads/%(title)s.%(ext)s',
-        'quiet': True,
-        'no_warnings': True,
-        'nocheckcertificate': True,
-        # Allow multi-client rotation so a stream is always found
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['mweb', 'ios', 'android', 'web']
-            }
+    # Force pre-merged single files (Audio + Video combined)
+    'format': 'b/18/22/best',
+    'outtmpl': 'downloads/%(title)s.%(ext)s',
+    'quiet': True,
+    'no_warnings': True,
+    'nocheckcertificate': True,
+    'extractor_args': {
+        'youtube': {
+            'player_client': ['android', 'ios', 'mweb']
         }
     }
-    
+}    
     if cookie_file:
         ydl_opts['cookiefile'] = cookie_file
 
